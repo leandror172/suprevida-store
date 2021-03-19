@@ -1,0 +1,26 @@
+title: Product
+type: object
+description: Basic store product
+properties:
+  id:
+    type: string
+  title:
+    type: string
+  price:
+    type: number
+    format: double
+    minimum: 0
+    exclusiveMinimum: false
+  category:
+    type: string
+  description:
+    type: string
+  pictureId:
+    type: integer
+  state:
+    type: string
+required:
+  - title
+  - price
+  - category
+  - state
