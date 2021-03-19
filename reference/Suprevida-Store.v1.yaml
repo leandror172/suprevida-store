@@ -143,6 +143,54 @@ paths:
                   dateOfBirth: '1996-08-24'
         description: Post the necessary fields for the API to create a new user.
       description: Create a new user.
+  /products:
+    get:
+      summary: List all products
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          headers: {}
+        '401':
+          description: Unauthorized
+      operationId: get-products
+      security:
+        - API Key - 1: []
+      parameters: []
+      description: List all available products
+    post:
+      summary: ''
+      operationId: post-products
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      description: Add a new product
+      security:
+        - API Key - 1: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+        description: ''
 components:
   schemas:
     User:
@@ -178,8 +226,55 @@ components:
         - firstName
         - lastName
         - email
+    Product:
+      title: Product
+      type: object
+      description: Basic store product
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        price:
+          type: number
+          format: double
+          minimum: 0
+          exclusiveMinimum: false
+        category:
+          type: string
+        description:
+          type: string
+        pictureId:
+          type: integer
+        state:
+          type: string
+      required:
+        - title
+        - price
+        - category
+        - state
+    Error:
+      description: ''
+      type: object
+      properties:
+        error:
+          type: string
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        detail:
+          type: string
+          minLength: 1
+      required:
+        - error
+        - message
+        - detail
+      x-examples: {}
   securitySchemes:
     API Key - 1:
       name: API Key
       type: apiKey
-      in: query
+      in: header
+security:
+  - API Key - 1: []
