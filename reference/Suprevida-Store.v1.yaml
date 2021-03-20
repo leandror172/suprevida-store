@@ -3,7 +3,7 @@ info:
   title: Suprevida Store
   version: '1.0'
 servers:
-  - url: 'http://localhost:3000/store/api'
+  - url: 'http://localhost:3000/api/store'
 paths:
   '/users/{userId}':
     parameters:
@@ -242,6 +242,12 @@ paths:
       description: Delete a product from the sistem
       security:
         - API Key - 1: []
+  /cart:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-cart
 components:
   schemas:
     User:
