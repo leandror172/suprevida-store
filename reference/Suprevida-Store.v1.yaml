@@ -3,7 +3,7 @@ info:
   title: Suprevida Store
   version: '1.0'
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'http://localhost:3000/store/api'
 paths:
   '/users/{userId}':
     parameters:
@@ -155,7 +155,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Product'
+                  type: integer
             application/xml:
               schema:
                 type: array
@@ -180,8 +180,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       description: Add a new product
       security:
         - API Key - 1: []
@@ -191,6 +196,52 @@ paths:
             schema:
               $ref: '#/components/schemas/Product'
         description: ''
+    parameters:
+      - schema:
+          type: string
+        name: ''
+        in: path
+        required: true
+  '/products/{productId}':
+    parameters:
+      - schema:
+          type: string
+        name: productId
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-products-productId
+      description: Get details for a single product
+    delete:
+      summary: ''
+      operationId: delete-products-productId
+      responses:
+        '200':
+          description: OK
+      description: Delete a product from the sistem
+      security:
+        - API Key - 1: []
 components:
   schemas:
     User:
@@ -232,7 +283,7 @@ components:
       description: Basic store product
       properties:
         id:
-          type: string
+          type: integer
         title:
           type: string
         price:
