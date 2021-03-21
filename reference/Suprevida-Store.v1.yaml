@@ -3,7 +3,7 @@ info:
   title: Suprevida Store
   version: '1.0'
 servers:
-  - url: 'http://localhost:3000/api/store'
+  - url: 'http://localhost:3000/api/store/v1'
 paths:
   '/users/{userId}':
     parameters:
@@ -248,6 +248,7 @@ paths:
       tags: []
       responses: {}
       operationId: get-cart
+    parameters: []
 components:
   schemas:
     User:
@@ -328,6 +329,21 @@ components:
         - message
         - detail
       x-examples: {}
+    Cart:
+      title: Cart
+      type: object
+      x-examples: {}
+      properties:
+        id:
+          type: integer
+        userCode:
+          type: string
+        productId:
+          type: array
+          items:
+            type: integer
+      required:
+        - userCode
   securitySchemes:
     API Key - 1:
       name: API Key
