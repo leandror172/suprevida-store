@@ -5,14 +5,13 @@ info:
 servers:
   - url: 'http://localhost:3000/api/store/v1'
 paths:
-  '/users/{userId}':
+  '/users/{id}':
     parameters:
       - schema:
-          type: integer
-        name: userId
+          type: string
+        name: id
         in: path
         required: true
-        description: Id of an existing user.
     get:
       summary: Get User Info by User ID
       tags: []
@@ -239,16 +238,142 @@ paths:
       responses:
         '200':
           description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       description: Delete a product from the sistem
       security:
         - API Key - 1: []
-  /cart:
+  '/users/{id}/carts':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
     get:
       summary: Your GET endpoint
       tags: []
-      responses: {}
-      operationId: get-cart
-    parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-users-id-carts
+      security:
+        - API Key - 1: []
+      description: 'Retrieve the shopping carts that belongs to user {id}'
+    post:
+      summary: 'Create/update a cart in user {id}'
+      operationId: post-users-id-carts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: 'Create/update a specific shopping cart that belongs to user {id}'
+      security:
+        - API Key - 1: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        description: ''
+    put:
+      summary: 'Create/update a cart in user {id}'
+      operationId: post-users-id-carts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: 'Create/update a specific shopping cart that belongs to user {id}'
+      security:
+        - API Key - 1: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        description: ''
 components:
   schemas:
     User:
