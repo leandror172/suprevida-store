@@ -164,8 +164,7 @@ paths:
         '401':
           description: Unauthorized
       operationId: get-products
-      security:
-        - API Key - 1: []
+      security: []
       parameters: []
       description: List all available products
     post:
@@ -187,8 +186,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       description: Add a new product
-      security:
-        - API Key - 1: []
+      security: []
       requestBody:
         content:
           application/json:
@@ -245,8 +243,7 @@ paths:
         '404':
           description: Not Found
       description: Delete a product from the sistem
-      security:
-        - API Key - 1: []
+      security: []
   '/users/{id}/carts':
     parameters:
       - schema:
@@ -286,7 +283,7 @@ paths:
                 $ref: '#/components/schemas/Error'
       operationId: get-users-id-carts
       security:
-        - API Key - 1: []
+        - bearerAuth: []
       description: 'Retrieve the shopping carts that belongs to user {id}'
     post:
       summary: 'Create/update a cart in user {id}'
@@ -299,32 +296,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/Cart'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Error'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Error'
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Cart'
+          $ref: '#/components/responses/Error'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Error'
       description: 'Create/update a specific shopping cart that belongs to user {id}'
       security:
-        - API Key - 1: []
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
@@ -333,7 +314,7 @@ paths:
         description: ''
     put:
       summary: 'Create/update a cart in user {id}'
-      operationId: post-users-id-carts
+      operationId: put-users-id-carts
       responses:
         '200':
           description: OK
@@ -365,9 +346,95 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      description: 'Create/update a specific shopping cart that belongs to user {id}'
+      description: 'Update a specific shopping cart that belongs to user {id}. If the informad cart does not exist, it will return a 400 bad request status. The cart will be updated to reflect the products and quantities informed. A product with quantity "0" will be removed from the cart. If a product is not informed, it will be deleted.'
       security:
-        - API Key - 1: []
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        description: ''
+    patch:
+      summary: 'Create/update a cart in user {id}'
+      operationId: put-users-id-carts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: 'Update a specific shopping cart that belongs to user {id}. If the informad cart does not exist, it will return a 400 bad request status. Only the informed items will be updated in the cart. A product with quantity "0" will be removed from the cart.'
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        description: ''
+    delete:
+      summary: 'Create/update a cart in user {id}'
+      operationId: delete-users-id-carts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: 'Dele a shopping cart that belongs to user {id}'
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
@@ -463,16 +530,29 @@ components:
           type: integer
         userCode:
           type: string
-        productId:
+        products:
           type: array
           items:
-            type: integer
+            type: object
+        productId:
+          type: integer
+        quantity:
+          type: integer
       required:
         - userCode
+        - productId
   securitySchemes:
-    API Key - 1:
-      name: API Key
-      type: apiKey
-      in: header
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: ''
+      bearerFormat: JWT
+  responses:
+    Error:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
 security:
   - API Key - 1: []
