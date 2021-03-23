@@ -193,12 +193,6 @@ paths:
             schema:
               $ref: '#/components/schemas/Product'
         description: ''
-    parameters:
-      - schema:
-          type: string
-        name: ''
-        in: path
-        required: true
   '/products/{productId}':
     parameters:
       - schema:
@@ -432,7 +426,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      description: 'Dele a shopping cart that belongs to user {id}'
+      description: 'Delete a shopping cart that belongs to user {id}'
       security:
         - bearerAuth: []
       requestBody:
@@ -441,6 +435,50 @@ paths:
             schema:
               $ref: '#/components/schemas/Cart'
         description: ''
+  '/users/{id}/products':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+      operationId: get-users-id-products
+      description: 'Get the list of products that can be bought by user {id}. '
+      parameters:
+        - schema:
+            type: number
+            format: double
+          in: query
+          name: latitude
+          description: Client location's latitude
+          required: true
+        - schema:
+            type: number
+            format: double
+          in: query
+          name: longitude
+          description: Client location's longitude
+          required: true
+      security:
+        - bearerAuth: []
 components:
   schemas:
     User:
