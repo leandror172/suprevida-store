@@ -111,37 +111,30 @@ paths:
                     createDate: '2020-11-18'
         '400':
           description: Missing Required Information
-        '409':
-          description: Email Already Taken
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                dateOfBirth:
-                  type: string
-                  format: date
-              required:
-                - firstName
-                - lastName
-                - email
-                - dateOfBirth
+              $ref: '#/components/schemas/User'
             examples:
-              Create User Bob Fellow:
+              Create Admin User Bob Fellow:
                 value:
                   firstName: Bob
                   lastName: Fellow
                   email: bob.fellow@gmail.com
-                  dateOfBirth: '1996-08-24'
+                  admin: true
         description: Post the necessary fields for the API to create a new user.
       description: Create a new user.
+      security:
+        - bearerAuth: []
   /products:
     get:
       summary: List all products
@@ -173,6 +166,12 @@ paths:
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
         '400':
           description: Bad Request
           content:
@@ -185,13 +184,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      description: Add a new product
-      security: []
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          description: Not Found
+      description: Add one or more new product(s)
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              type: array
+              items:
+                $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              type: object
+              properties: {}
         description: ''
   '/products/{productId}':
     parameters:
@@ -238,6 +248,13 @@ paths:
           description: Not Found
       description: Delete a product from the sistem
       security: []
+    post:
+      summary: ''
+      operationId: post-products-productId
+      responses:
+        '200':
+          description: OK
+      description: Edit a product
   '/users/{id}/carts':
     parameters:
       - schema:
@@ -491,9 +508,7 @@ components:
           firstName: Alice
           lastName: Smith
           email: alice.smith@gmail.com
-          dateOfBirth: '1997-10-31'
-          emailVerified: true
-          signUpDate: '2019-08-24'
+          admin: true
       properties:
         id:
           type: integer
@@ -505,15 +520,16 @@ components:
         email:
           type: string
           format: email
-        dateOfBirth:
+        admin:
+          type: boolean
+        code:
           type: string
-          format: date
-          example: '1997-10-31'
       required:
         - id
         - firstName
         - lastName
         - email
+        - code
     Product:
       title: Product
       type: object
@@ -530,17 +546,17 @@ components:
           exclusiveMinimum: false
         category:
           type: string
-        description:
-          type: string
-        pictureId:
+        pictureCode:
           type: integer
-        state:
+        stateCode:
+          type: string
+        desciption:
           type: string
       required:
         - title
         - price
         - category
-        - state
+        - stateCode
     Error:
       description: ''
       type: object
@@ -572,13 +588,43 @@ components:
           type: array
           items:
             type: object
-        productId:
-          type: integer
-        quantity:
-          type: integer
+            properties:
+              productId:
+                type: integer
+              quantity:
+                type: integer
+            required:
+              - productId
+              - quantity
       required:
         - userCode
-        - productId
+    NewProduct:
+      title: Product
+      type: object
+      description: Basic store product
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        price:
+          type: number
+          format: double
+          minimum: 0
+          exclusiveMinimum: false
+        category:
+          type: string
+        picture:
+          type: object
+        stateCode:
+          type: string
+        desciption:
+          type: string
+      required:
+        - title
+        - price
+        - category
+        - stateCode
   securitySchemes:
     bearerAuth:
       type: http
@@ -587,7 +633,7 @@ components:
       bearerFormat: JWT
   responses:
     Error:
-      description: Example response
+      description: ''
       content:
         application/json:
           schema:
