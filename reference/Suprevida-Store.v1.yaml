@@ -7,14 +7,11 @@ servers:
 paths:
   '/users/{id}':
     parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/id'
     get:
       summary: Get User Info by User ID
-      tags: []
+      tags:
+        - users
       responses:
         '200':
           description: User Found
@@ -25,7 +22,7 @@ paths:
               examples:
                 Get User Alice Smith:
                   value:
-                    id: 142
+                    id: bbde4839-2cfe-4e85-b9f2-202bb4f791d7
                     firstName: Alice
                     lastName: Smith
                     email: alice.smith@gmail.com
@@ -33,7 +30,7 @@ paths:
                     emailVerified: true
                     signUpDate: '2019-08-24'
         '404':
-          description: User Not Found
+          $ref: '#/components/responses/Error404'
       operationId: get-users-userId
       description: Retrieve the information of the user with the matching user ID.
     patch:
@@ -49,18 +46,22 @@ paths:
               examples:
                 Updated User Rebecca Baker:
                   value:
-                    id: 13
+                    id: c02ea2f4-74d8-4027-8895-60af96eb1852
                     firstName: Rebecca
                     lastName: Baker
                     email: rebecca@gmail.com
                     dateOfBirth: '1985-10-02'
                     emailVerified: false
                     createDate: '2019-08-24'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
         '404':
-          description: User Not Found
-        '409':
-          description: Email Already Taken
-      description: Update the information of an existing user.
+          $ref: '#/components/responses/Error404'
+      description: Update the information of an existing user. Only admins can update users.
       requestBody:
         content:
           application/json:
@@ -88,7 +89,7 @@ paths:
                   lastName: Baker
                   dateOfBirth: '1985-10-02'
         description: Patch user properties to update.
-  /user:
+  /users:
     post:
       summary: Create New User
       operationId: post-user
@@ -102,7 +103,7 @@ paths:
               examples:
                 New User Bob Fellow:
                   value:
-                    id: 12
+                    id: dcb6ef4c-396a-49d6-9628-2f67b42bba78
                     firstName: Bob
                     lastName: Fellow
                     email: bob.fellow@gmail.com
@@ -110,15 +111,11 @@ paths:
                     emailVerified: false
                     createDate: '2020-11-18'
         '400':
-          description: Missing Required Information
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Error400'
         '401':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error401'
         '403':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error403'
       requestBody:
         content:
           application/json:
@@ -132,22 +129,38 @@ paths:
                   email: bob.fellow@gmail.com
                   admin: true
         description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
+      description: Create a new user. Only admins can create new users.
       security:
         - bearerAuth: []
+      tags:
+        - users
+    parameters: []
   /products:
     get:
       summary: List all products
-      tags: []
+      tags:
+        - products
       responses:
         '200':
-          description: OK
+          description: Product Retrieved
           content:
             application/json:
               schema:
                 type: array
+                uniqueItems: true
                 items:
-                  type: integer
+                  type: object
+                  properties:
+                    productId:
+                      type: string
+                      format: uuid
+                  required:
+                    - productId
+              examples:
+                Two products:
+                  value:
+                    - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
+                    - productId: 2dd1b84f-6f0a-472e-a878-6f067fc2fc05
             application/xml:
               schema:
                 type: array
@@ -155,46 +168,55 @@ paths:
                   $ref: '#/components/schemas/Product'
           headers: {}
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Error401'
       operationId: get-products
-      security: []
+      security:
+        - bearerAuth: []
       parameters: []
-      description: List all available products
+      description: List all available products.
     post:
       summary: ''
       operationId: post-products
       responses:
         '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: integer
+          description: Product created
         '400':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error400'
         '401':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error401'
         '403':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error403'
         '404':
-          $ref: '#/components/responses/Error'
-      description: 'Add one or more new product(s). This product can have a picture, passed on the field "image".'
+          $ref: '#/components/responses/Error404'
+      description: |-
+        Add a new product. This product can have a picture, passed on the field "image".
+        Only admins can post products.
       security:
         - bearerAuth: []
       requestBody:
         content:
           multipart/form-data:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/NewProduct'
+              $ref: '#/components/schemas/Product-Image'
+            examples:
+              Simple product:
+                value:
+                  id: 2dd1b84f-6f0a-472e-a878-6f067fc2fc05
+                  title: Seringa 5 ml
+                  price: 0.15
+                  category: seringa
+                  image: string
+                  stateCode: SP
+                  desciption: Seringa 5 ml xiamoi
         description: ''
+      tags:
+        - products
     patch:
       summary: ''
       operationId: patch-products
-      description: 'Add one or more new product(s). This product can have a picture, passed on the field "image". Only the informed fields will be updated.'
+      description: |-
+        Add one or more new product(s). This product can have a picture, passed on the field "image". Only the informed fields will be updated.
+        Only admins can patch products.
       security:
         - bearerAuth: []
       requestBody:
@@ -207,13 +229,15 @@ paths:
         '200':
           description: OK
         '400':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error400'
         '401':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error401'
         '403':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error403'
         '404':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error404'
+      tags:
+        - products
   '/products/{id}':
     parameters:
       - schema:
@@ -233,17 +257,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Product'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Error401'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Error404'
       operationId: get-products-id
       description: Get details for a single product
     delete:
@@ -253,17 +269,23 @@ paths:
         '200':
           description: OK
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Error401'
         '403':
-          description: Forbidden
+          $ref: '#/components/responses/Error403'
         '404':
-          description: Not Found
-      description: Delete a product from the sistem
+          $ref: '#/components/responses/Error404'
+      description: |-
+        Delete a product from the system.
+        Only admins can delete products.
       security: []
+      tags:
+        - products
     patch:
       summary: ''
       operationId: patch-products-id
-      description: 'Update a single product. This product can have a picture, passed on the field "image". Only the informed fields will be updated.'
+      description: |-
+        Update a single product. This product can have a picture, passed on the field "image". Only the informed fields will be updated.
+        Only admins can patch products.
       security:
         - bearerAuth: []
       requestBody:
@@ -276,20 +298,34 @@ paths:
         '200':
           description: OK
         '400':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error400'
         '401':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error401'
         '403':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error403'
         '404':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error404'
+      tags:
+        - products
     post:
       summary: ''
       operationId: post-products-id
       responses:
         '200':
           description: OK
-      description: Edit a product
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+      description: |-
+        Edit a product.
+        Only admins can edit products.
+      tags:
+        - products
   '/users/{id}/carts':
     parameters:
       - schema:
@@ -299,7 +335,8 @@ paths:
         required: true
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - users
       responses:
         '200':
           description: OK
@@ -312,13 +349,13 @@ paths:
               examples:
                 Two products:
                   value:
-                    - id: 150
-                      userCode: gdfas#%$bfvdgsY%$#&I
+                    - id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                      userId: 2c4a230c-5085-4924-a3e1-25fb4fc5965b
                       products:
-                        - productId: 42
-                          quantity: 1
-                        - productId: 43
-                          quantity: 3
+                        - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
+                          quantity: 0
+                        - productId: 28e62f9a-5034-49c9-b300-8cb7d59f048f
+                          quantity: 0
         '401':
           description: Unauthorized
           content:
@@ -368,13 +405,20 @@ paths:
             schema:
               $ref: '#/components/schemas/Cart'
             examples:
-              New cart:
+              Three items:
                 value:
-                  userCode: OTRGHLytres67%O$&(OYTHG
+                  id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                  userId: 2c4a230c-5085-4924-a3e1-25fb4fc5965b
                   products:
-                    - productId: 43
-                      quantity: 100
+                    - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
+                      quantity: 5
+                    - productId: 4fdef69e-b54f-45fb-ac2a-c8bddd66439a
+                      quantity: 1
+                    - productId: 2861e4a0-c948-47b3-a785-8f6eb2880fb9
+                      quantity: 50
         description: ''
+      tags:
+        - users
     put:
       summary: 'Create/update a cart in user {id}'
       operationId: put-users-id-carts
@@ -417,7 +461,17 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Cart'
+            examples:
+              One product:
+                value:
+                  id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                  userId: 2c4a230c-5085-4924-a3e1-25fb4fc5965b
+                  products:
+                    - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
+                      quantity: 3
         description: ''
+      tags:
+        - users
     patch:
       summary: 'Create/update a cart in user {id}'
       operationId: put-users-id-carts
@@ -461,6 +515,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Cart'
         description: ''
+      tags:
+        - users
     delete:
       summary: 'Create/update a cart in user {id}'
       operationId: delete-users-id-carts
@@ -504,16 +560,15 @@ paths:
             schema:
               $ref: '#/components/schemas/Cart'
         description: ''
+      tags:
+        - users
   '/users/{id}/products':
     parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/id'
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - users
       responses:
         '200':
           description: OK
@@ -530,7 +585,7 @@ paths:
         '404':
           $ref: '#/components/responses/Error'
       operationId: get-users-id-products
-      description: 'Get the list of products that can be bought by user {id}. '
+      description: 'Get the list of products that can be bought by user {id}. This takes in consideration the user''s stea. The state will be determined by the user''s current geolocation, found with the latitude and longitude informed.'
       parameters:
         - schema:
             type: number
@@ -563,8 +618,9 @@ components:
           admin: true
       properties:
         id:
-          type: integer
+          type: string
           description: Unique identifier for the given user.
+          format: uuid
         firstName:
           type: string
         lastName:
@@ -574,21 +630,18 @@ components:
           format: email
         admin:
           type: boolean
-        code:
-          type: string
       required:
-        - id
         - firstName
         - lastName
         - email
-        - code
     Product:
       title: Product
       type: object
       description: Basic store product
       properties:
         id:
-          type: integer
+          type: string
+          format: uuid
         title:
           type: string
         price:
@@ -633,30 +686,34 @@ components:
       x-examples: {}
       properties:
         id:
-          type: integer
-        userCode:
           type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
         products:
           type: array
           items:
             type: object
             properties:
               productId:
-                type: integer
+                type: string
+                format: uuid
               quantity:
                 type: integer
             required:
               - productId
               - quantity
       required:
-        - userCode
+        - userId
     Product-Image:
       title: Product
       type: object
       description: Basic store product
       properties:
         id:
-          type: integer
+          type: string
+          format: uuid
         title:
           type: string
         price:
@@ -683,11 +740,38 @@ components:
       type: oauth2
       flows: {}
   responses:
-    Error:
-      description: ''
+    Error400:
+      description: There is a problem with the request data
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Error401:
+      description: Please authenticate first.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error403:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error404:
+      description: Entity not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  examples: {}
+  parameters:
+    id:
+      name: id
+      in: path
+      schema:
+        type: string
+        format: uuid
+      description: UUID that identifies the entity
 security:
   - API Key - 1: []
