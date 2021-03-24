@@ -188,21 +188,29 @@ paths:
           $ref: '#/components/responses/Error'
         '404':
           description: Not Found
-      description: Add one or more new product(s)
+      description: 'Add one or more new product(s). This product can have a picture, passed on the field "image".'
       security:
         - bearerAuth: []
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Product'
+                $ref: '#/components/schemas/NewProduct'
+        description: ''
+    put:
+      summary: ''
+      operationId: put-products
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
           multipart/form-data:
             schema:
               type: object
               properties: {}
-        description: ''
   '/products/{productId}':
     parameters:
       - schema:
@@ -546,8 +554,8 @@ components:
           exclusiveMinimum: false
         category:
           type: string
-        pictureCode:
-          type: integer
+        imageCode:
+          type: string
         stateCode:
           type: string
         desciption:
@@ -614,8 +622,9 @@ components:
           exclusiveMinimum: false
         category:
           type: string
-        picture:
-          type: object
+        image:
+          type: string
+          format: binary
         stateCode:
           type: string
         desciption:
