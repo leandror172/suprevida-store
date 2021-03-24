@@ -514,6 +514,21 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Cart'
+            examples:
+              Add one item:
+                value:
+                  id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                  userId: 2c4a230c-5085-4924-a3e1-25fb4fc5965b
+                  products:
+                    - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
+                      quantity: 0
+              Remove one item:
+                value:
+                  id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                  userId: 2c4a230c-5085-4924-a3e1-25fb4fc5965b
+                  products:
+                    - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
+                      quantity: 0
         description: ''
       tags:
         - users
@@ -559,6 +574,14 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Cart'
+            examples:
+              example-1:
+                value:
+                  id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
+                  userId: 2c4a230c-5085-4924-a3e1-25fb4fc5965b
+                  products:
+                    - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
+                      quantity: 0
         description: ''
       tags:
         - users
