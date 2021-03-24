@@ -164,8 +164,8 @@ paths:
       summary: ''
       operationId: post-products
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -173,21 +173,13 @@ paths:
                 items:
                   type: integer
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Error'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Error'
         '403':
           $ref: '#/components/responses/Error'
         '404':
-          description: Not Found
+          $ref: '#/components/responses/Error'
       description: 'Add one or more new product(s). This product can have a picture, passed on the field "image".'
       security:
         - bearerAuth: []
@@ -199,28 +191,40 @@ paths:
               items:
                 $ref: '#/components/schemas/NewProduct'
         description: ''
-    put:
+    patch:
       summary: ''
-      operationId: put-products
-      responses:
-        '200':
-          description: OK
+      operationId: patch-products
+      description: 'Add one or more new product(s). This product can have a picture, passed on the field "image". Only the informed fields will be updated.'
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           multipart/form-data:
             schema:
-              type: object
-              properties: {}
-  '/products/{productId}':
+              $ref: '#/components/schemas/Product-Image'
+        description: ''
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  '/products/{id}':
     parameters:
       - schema:
           type: string
-        name: productId
+        name: id
         in: path
         required: true
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - products
       responses:
         '200':
           description: OK
@@ -240,7 +244,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      operationId: get-products-productId
+      operationId: get-products-id
       description: Get details for a single product
     delete:
       summary: ''
@@ -256,9 +260,32 @@ paths:
           description: Not Found
       description: Delete a product from the sistem
       security: []
+    patch:
+      summary: ''
+      operationId: patch-products-id
+      description: 'Update a single product. This product can have a picture, passed on the field "image". Only the informed fields will be updated.'
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product-Image'
+        description: ''
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
     post:
       summary: ''
-      operationId: post-products-productId
+      operationId: post-products-id
       responses:
         '200':
           description: OK
@@ -282,6 +309,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Cart'
+              examples:
+                Two products:
+                  value:
+                    - id: 150
+                      userCode: gdfas#%$bfvdgsY%$#&I
+                      products:
+                        - productId: 42
+                          quantity: 1
+                        - productId: 43
+                          quantity: 3
         '401':
           description: Unauthorized
           content:
@@ -330,6 +367,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Cart'
+            examples:
+              New cart:
+                value:
+                  userCode: OTRGHLytres67%O$&(OYTHG
+                  products:
+                    - productId: 43
+                      quantity: 100
         description: ''
     put:
       summary: 'Create/update a cart in user {id}'
@@ -606,7 +650,7 @@ components:
               - quantity
       required:
         - userCode
-    NewProduct:
+    Product-Image:
       title: Product
       type: object
       description: Basic store product
@@ -636,10 +680,8 @@ components:
         - stateCode
   securitySchemes:
     bearerAuth:
-      type: http
-      scheme: bearer
-      description: ''
-      bearerFormat: JWT
+      type: oauth2
+      flows: {}
   responses:
     Error:
       description: ''
