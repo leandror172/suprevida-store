@@ -46,9 +46,7 @@ paths:
                     firstName: Alice
                     lastName: Smith
                     email: alice.smith@gmail.com
-                    dateOfBirth: '1997-10-31'
-                    emailVerified: true
-                    signUpDate: '2019-08-24'
+                    admin: false
         '401':
           $ref: '#/components/responses/Error401'
         '403':
@@ -78,8 +76,7 @@ paths:
                     firstName: Rebecca
                     lastName: Baker
                     email: rebecca@gmail.com
-                    dateOfBirth: '1985-10-02'
-                    emailVerified: false
+                    admin: false
                     createDate: '2019-08-24'
         '400':
           $ref: '#/components/responses/Error400'
