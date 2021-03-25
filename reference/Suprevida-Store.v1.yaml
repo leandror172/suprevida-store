@@ -8,9 +8,8 @@ info:
     email: leandrocdarocha@gmail.com
   description: 'Simple project representing a store, for Suprevida.'
 servers:
-  # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/leandro.rocha/SuprevidaStore/1.0
+    url: 'https://virtserver.swaggerhub.com/leandro.rocha/SuprevidaStore/1.0'
   - url: 'http://localhost:3000/api/store/v1'
 tags:
   - name: users
@@ -21,7 +20,7 @@ tags:
   - name: products
     description: 'Access to store''s products. Used to manage products, and list them for users.'
   - name: carts
-    description: 'Operations for users create/edit shopping carts.'
+    description: Operations for users create/edit shopping carts.
     externalDocs:
       description: Find out more
       url: 'http://swagger.io'
@@ -50,10 +49,16 @@ paths:
                     dateOfBirth: '1997-10-31'
                     emailVerified: true
                     signUpDate: '2019-08-24'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
         '404':
           $ref: '#/components/responses/Error404'
       operationId: get-users-userId
       description: Retrieve the information of the user with the matching user ID.
+      security:
+        - bearerAuth: []
     patch:
       tags:
         - users
@@ -290,6 +295,8 @@ paths:
           $ref: '#/components/responses/Error404'
       operationId: get-products-id
       description: Get detailed information for a single product
+      security:
+        - bearerAuth: []
     delete:
       summary: Delete Product
       operationId: delete-products-productId
@@ -305,7 +312,8 @@ paths:
       description: |-
         Delete a product from the system.
         Only admins can delete products.
-      security: []
+      security:
+        - bearerAuth: []
       tags:
         - products
     patch:
@@ -354,7 +362,14 @@ paths:
         Only admins can edit products.
       tags:
         - products
-  /users/{userId}/carts:
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+  '/users/{userId}/carts':
     parameters:
       - $ref: '#/components/parameters/userId'
     get:
@@ -446,7 +461,7 @@ paths:
     put:
       summary: Update cart
       tags:
-      - carts
+        - carts
       operationId: put-users-id-carts
       responses:
         '200':
@@ -499,7 +514,7 @@ paths:
     patch:
       summary: Update cart
       tags:
-      - carts
+        - carts
       operationId: patch-users-id-carts
       responses:
         '204':
