@@ -8,6 +8,9 @@ info:
     email: leandrocdarocha@gmail.com
   description: 'Simple project representing a store, for Suprevida.'
 servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/leandro.rocha/SuprevidaStore/1.0
   - url: 'http://localhost:3000/api/store/v1'
 tags:
   - name: users
@@ -18,12 +21,9 @@ tags:
   - name: products
     description: 'Access to store''s products. Used to manage products, and list them for users.'
   - name: carts
-    description: |-
-      Operations to manage the shopping carts. This allow users to create, edit and remove shopping carts.
-      Shopping carts will not be stored indefinetly; they will persist after a user logs out,
-      but will eventually be removed by the system.
+    description: 'Operations for users create/edit shopping carts.'
     externalDocs:
-      description: Find out more about our store
+      description: Find out more
       url: 'http://swagger.io'
 paths:
   '/users/{userId}':
@@ -354,14 +354,13 @@ paths:
         Only admins can edit products.
       tags:
         - products
-  /users/carts:
+  /users/{userId}/carts:
     parameters:
       - $ref: '#/components/parameters/userId'
-      - $ref: '#/components/parameters/productId'
     get:
       summary: List carts
       tags:
-        - users
+        - carts
       responses:
         '200':
           description: OK
@@ -405,6 +404,8 @@ paths:
       description: 'Retrieve the shopping carts that belongs to {userId}'
     post:
       summary: Create/update cart
+      tags:
+        - carts
       operationId: post-users-id-carts
       responses:
         '200':
@@ -441,11 +442,11 @@ paths:
                       quantity: 1
                     - productId: 2861e4a0-c948-47b3-a785-8f6eb2880fb9
                       quantity: 50
-        description: ''
-      tags:
-        - users
+        description: 'Create or update a shopping cart; carts will not be stored indefinetly - they will persist after a user logs out, but will eventually be removed by the system. An existing cart will be updated to reflect the products and quantities informed. A product with quantity "0" will be removed from the cart. If a product is not informed, it will be deleted.'
     put:
       summary: Update cart
+      tags:
+      - carts
       operationId: put-users-id-carts
       responses:
         '200':
@@ -495,10 +496,10 @@ paths:
                     - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
                       quantity: 3
         description: ''
-      tags:
-        - users
     patch:
       summary: Update cart
+      tags:
+      - carts
       operationId: patch-users-id-carts
       responses:
         '204':
@@ -555,8 +556,6 @@ paths:
                     - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
                       quantity: 0
         description: ''
-      tags:
-        - users
   '/users/{userId}/products':
     parameters:
       - $ref: '#/components/parameters/userId'
