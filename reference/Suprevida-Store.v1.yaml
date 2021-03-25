@@ -6,8 +6,25 @@ info:
     name: Leandro Cavalcante da Rocha
     url: www.linkedin.com/in/leandror3
     email: leandrocdarocha@gmail.com
+  description: Simple project representing a store, for Suprevida.
 servers:
   - url: 'http://localhost:3000/api/store/v1'
+tags:
+  - name: users
+    description: General user operations. Mostly used by admins to manage users.
+    externalDocs:
+      description: Find out more
+      url: 'http://swagger.io'
+  - name: products
+    description: 'Access to store''s products. Used to manage products, and list them for users.'
+  - name: carts
+    description: |-
+      Operations to manage the shopping carts. This allow users to create, edit and remove shopping carts.
+      Shopping carts will not be stored indefinetly; they will persist after a user logs out,
+      but will eventually be removed by the system.
+    externalDocs:
+      description: Find out more about our store
+      url: 'http://swagger.io'
 paths:
   '/users/{userId}':
     parameters:
@@ -639,8 +656,9 @@ paths:
       - $ref: '#/components/parameters/productId'
       - $ref: '#/components/parameters/imageId'
     get:
-      summary: Your GET endpoint
-      tags: []
+      summary: Get product picture
+      tags:
+        - products
       responses:
         '200':
           description: OK
