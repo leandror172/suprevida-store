@@ -43,7 +43,7 @@ paths:
       summary: Update User
       operationId: patch-users-userId
       responses:
-        '200':
+        '204':
           description: User Updated
           content:
             application/json:
@@ -95,6 +95,8 @@ paths:
                   lastName: Baker
                   dateOfBirth: '1985-10-02'
         description: Patch user properties to update.
+      security:
+        - bearerAuth: []
   /users:
     post:
       summary: Create/Update User
@@ -185,7 +187,14 @@ paths:
       operationId: post-products
       responses:
         '200':
-          description: Product created
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: UUID that identifies a product
+        '204':
+          description: Product updated
         '400':
           $ref: '#/components/responses/Error400'
         '401':
@@ -232,8 +241,8 @@ paths:
               $ref: '#/components/schemas/Product-Image'
         description: ''
       responses:
-        '200':
-          description: OK
+        '204':
+          description: No Content
         '400':
           $ref: '#/components/responses/Error400'
         '401':
@@ -268,8 +277,8 @@ paths:
       summary: Delete Product
       operationId: delete-products-productId
       responses:
-        '200':
-          description: OK
+        '204':
+          description: No Content
         '401':
           $ref: '#/components/responses/Error401'
         '403':
@@ -297,8 +306,8 @@ paths:
               $ref: '#/components/schemas/Product-Image'
         description: ''
       responses:
-        '200':
-          description: OK
+        '204':
+          description: No Content
         '400':
           $ref: '#/components/responses/Error400'
         '401':
@@ -313,8 +322,8 @@ paths:
       summary: Create Product
       operationId: post-products-id
       responses:
-        '200':
-          description: OK
+        '204':
+          description: No Content
         '400':
           $ref: '#/components/responses/Error400'
         '401':
@@ -474,8 +483,8 @@ paths:
       summary: Update cart
       operationId: patch-users-id-carts
       responses:
-        '200':
-          description: OK
+        '204':
+          description: No Content
           content:
             application/json:
               schema:
@@ -640,7 +649,7 @@ paths:
               schema:
                 type: string
                 format: binary
-      operationId: get-users-id-products-id-image
+      operationId: get-users-id-products-id-image-id
       description: 'Retrieves a product''s image. '
       security:
         - bearerAuth: []
