@@ -13,7 +13,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/userId'
     get:
-      summary: Get User Info by User ID
+      summary: Get User Info
       tags:
         - users
       responses:
@@ -38,7 +38,9 @@ paths:
       operationId: get-users-userId
       description: Retrieve the information of the user with the matching user ID.
     patch:
-      summary: Update User Information
+      tags:
+        - users
+      summary: Update User
       operationId: patch-users-userId
       responses:
         '200':
@@ -95,7 +97,7 @@ paths:
         description: Patch user properties to update.
   /users:
     post:
-      summary: Create New User
+      summary: Create/Update User
       operationId: post-user
       responses:
         '200':
@@ -133,7 +135,7 @@ paths:
                   email: bob.fellow@gmail.com
                   admin: true
         description: Post the necessary fields for the API to create a new user.
-      description: Create a new user. Only admins can create new users.
+      description: Create a new user or update an existing one. Only admins can create new users.
       security:
         - bearerAuth: []
       tags:
@@ -141,7 +143,7 @@ paths:
     parameters: []
   /products:
     get:
-      summary: List all products
+      summary: List Products
       tags:
         - products
       responses:
@@ -179,7 +181,7 @@ paths:
       parameters: []
       description: List all available products.
     post:
-      summary: ''
+      summary: Create/Update Product
       operationId: post-products
       responses:
         '200':
@@ -193,7 +195,7 @@ paths:
         '404':
           $ref: '#/components/responses/Error404'
       description: |-
-        Add a new product. This product can have a picture, passed on the field "image".
+        Create a new product, or update an existing one. This product can have a picture, passed on the field "image".
         Only admins can post products.
       security:
         - bearerAuth: []
@@ -216,7 +218,7 @@ paths:
       tags:
         - products
     patch:
-      summary: ''
+      summary: Update Product
       operationId: patch-products
       description: |-
         Add one or more new product(s). This product can have a picture, passed on the field "image". Only the informed fields will be updated.
@@ -246,7 +248,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/productId'
     get:
-      summary: Your GET endpoint
+      summary: Get Product Info
       tags:
         - products
       responses:
@@ -261,9 +263,9 @@ paths:
         '404':
           $ref: '#/components/responses/Error404'
       operationId: get-products-id
-      description: Get details for a single product
+      description: Get detailed information for a single product
     delete:
-      summary: ''
+      summary: Delete Product
       operationId: delete-products-productId
       responses:
         '200':
@@ -281,7 +283,7 @@ paths:
       tags:
         - products
     patch:
-      summary: ''
+      summary: Update Product
       operationId: patch-products-id
       description: |-
         Update a single product. This product can have a picture, passed on the field "image". Only the informed fields will be updated.
@@ -308,7 +310,7 @@ paths:
       tags:
         - products
     post:
-      summary: ''
+      summary: Create Product
       operationId: post-products-id
       responses:
         '200':
@@ -322,7 +324,7 @@ paths:
         '404':
           $ref: '#/components/responses/Error404'
       description: |-
-        Edit a product.
+        Update an existing product.
         Only admins can edit products.
       tags:
         - products
@@ -330,7 +332,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/userId'
     get:
-      summary: Your GET endpoint
+      summary: List carts
       tags:
         - users
       responses:
@@ -373,9 +375,9 @@ paths:
       operationId: get-users-id-carts
       security:
         - bearerAuth: []
-      description: 'Retrieve the shopping carts that belongs to user {id}'
+      description: 'Retrieve the shopping carts that belongs to {userId}'
     post:
-      summary: 'Create/update a cart in user {id}'
+      summary: Create/update cart
       operationId: post-users-id-carts
       responses:
         '200':
@@ -392,7 +394,7 @@ paths:
           $ref: '#/components/responses/Error403'
         '404':
           $ref: '#/components/responses/Error404'
-      description: 'Create/update a specific shopping cart that belongs to user {id}'
+      description: 'Create/update a specific shopping cart that belongs to {userId}'
       security:
         - bearerAuth: []
       requestBody:
@@ -416,7 +418,7 @@ paths:
       tags:
         - users
     put:
-      summary: 'Create/update a cart in user {id}'
+      summary: Update cart
       operationId: put-users-id-carts
       responses:
         '200':
@@ -449,7 +451,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      description: 'Update a specific shopping cart that belongs to user {id}. If the informad cart does not exist, it will return a 400 bad request status. The cart will be updated to reflect the products and quantities informed. A product with quantity "0" will be removed from the cart. If a product is not informed, it will be deleted.'
+      description: 'Update a specific shopping cart that belongs to user {userId}. If the informad cart does not exist, it will return a 400 bad request status. The cart will be updated to reflect the products and quantities informed. A product with quantity "0" will be removed from the cart. If a product is not informed, it will be deleted.'
       security:
         - bearerAuth: []
       requestBody:
@@ -469,7 +471,7 @@ paths:
       tags:
         - users
     patch:
-      summary: 'Create/update a cart in user {id}'
+      summary: Update cart
       operationId: patch-users-id-carts
       responses:
         '200':
@@ -502,7 +504,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      description: 'Update a specific shopping cart that belongs to user {id}. If the informad cart does not exist, it will return a 400 bad request status. Only the informed items will be updated in the cart. A product with quantity "0" will be removed from the cart.'
+      description: 'Update a specific shopping cart that belongs to user {userId}. If the informad cart does not exist, it will return a 400 bad request status. Only the informed items will be updated in the cart. A product with quantity "0" will be removed from the cart.'
       security:
         - bearerAuth: []
       requestBody:
@@ -529,7 +531,7 @@ paths:
       tags:
         - users
     delete:
-      summary: 'Create/update a cart in user {id}'
+      summary: Delete cart
       operationId: delete-users-id-carts
       responses:
         '200':
@@ -562,7 +564,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      description: 'Delete a shopping cart that belongs to user {id}'
+      description: 'Delete a shopping cart that belongs to user {userId}'
       security:
         - bearerAuth: []
       requestBody:
@@ -585,7 +587,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/userId'
     get:
-      summary: Your GET endpoint
+      summary: List available products
       tags:
         - users
       responses:
@@ -604,7 +606,7 @@ paths:
         '404':
           $ref: '#/components/responses/Error404'
       operationId: get-users-id-products
-      description: 'Get the list of products that can be bought by user {id}. This takes in consideration the user''s state. The state will be determined by the user''s current geolocation, found with the latitude and longitude informed.'
+      description: 'Get the list of products that can be bought by user {userId}. This takes in consideration the user''s state. The state will be determined by the user''s current geolocation, found with the latitude and longitude informed.'
       parameters:
         - schema:
             type: number
