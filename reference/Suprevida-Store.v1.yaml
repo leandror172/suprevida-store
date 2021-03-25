@@ -577,7 +577,7 @@ paths:
     get:
       summary: List available products
       tags:
-        - users
+        - products
       responses:
         '200':
           description: OK
