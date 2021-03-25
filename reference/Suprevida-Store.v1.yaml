@@ -2,12 +2,16 @@ openapi: 3.0.0
 info:
   title: Suprevida Store
   version: '1.0'
+  contact:
+    name: Leandro Cavalcante da Rocha
+    url: www.linkedin.com/in/leandror3
+    email: leandrocdarocha@gmail.com
 servers:
   - url: 'http://localhost:3000/api/store/v1'
 paths:
-  '/users/{id}':
+  '/users/{userId}':
     parameters:
-      - $ref: '#/components/parameters/id'
+      - $ref: '#/components/parameters/userId'
     get:
       summary: Get User Info by User ID
       tags:
@@ -238,13 +242,9 @@ paths:
           $ref: '#/components/responses/Error404'
       tags:
         - products
-  '/products/{id}':
+  '/products/{productId}':
     parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/productId'
     get:
       summary: Your GET endpoint
       tags:
@@ -326,13 +326,9 @@ paths:
         Only admins can edit products.
       tags:
         - products
-  '/users/{id}/carts':
+  '/users/{userId}/carts':
     parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
+      - $ref: '#/components/parameters/userId'
     get:
       summary: Your GET endpoint
       tags:
@@ -389,13 +385,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Cart'
         '400':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error400'
         '401':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error401'
         '403':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error403'
         '404':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error404'
       description: 'Create/update a specific shopping cart that belongs to user {id}'
       security:
         - bearerAuth: []
@@ -474,7 +470,7 @@ paths:
         - users
     patch:
       summary: 'Create/update a cart in user {id}'
-      operationId: put-users-id-carts
+      operationId: patch-users-id-carts
       responses:
         '200':
           description: OK
@@ -585,9 +581,9 @@ paths:
         description: ''
       tags:
         - users
-  '/users/{id}/products':
+  '/users/{userId}/products':
     parameters:
-      - $ref: '#/components/parameters/id'
+      - $ref: '#/components/parameters/userId'
     get:
       summary: Your GET endpoint
       tags:
@@ -602,13 +598,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Product'
         '400':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error400'
         '401':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error401'
         '404':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/Error404'
       operationId: get-users-id-products
-      description: 'Get the list of products that can be bought by user {id}. This takes in consideration the user''s stea. The state will be determined by the user''s current geolocation, found with the latitude and longitude informed.'
+      description: 'Get the list of products that can be bought by user {id}. This takes in consideration the user''s state. The state will be determined by the user''s current geolocation, found with the latitude and longitude informed.'
       parameters:
         - schema:
             type: number
@@ -626,6 +622,27 @@ paths:
           required: true
       security:
         - bearerAuth: []
+  '/users/{userId}/products/{productId}/image/{imageId}':
+    parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/productId'
+      - $ref: '#/components/parameters/imageId'
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+      operationId: get-users-id-products-id-image
+      description: 'Retrieves a product''s image. '
+      security:
+        - bearerAuth: []
+      parameters: []
 components:
   schemas:
     User:
@@ -789,12 +806,28 @@ components:
             $ref: '#/components/schemas/Error'
   examples: {}
   parameters:
-    id:
-      name: id
+    userId:
+      name: userId
       in: path
       schema:
         type: string
         format: uuid
-      description: UUID that identifies the entity
+      description: UUID that identifies an user
+      required: true
+    productId:
+      name: productId
+      in: path
+      schema:
+        type: string
+        format: uuid
+      description: UUID that identifies a product
+      required: true
+    imageId:
+      name: imageId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: UUID that identifies an image
 security:
   - API Key - 1: []
