@@ -46,9 +46,7 @@ paths:
                     firstName: Alice
                     lastName: Smith
                     email: alice.smith@gmail.com
-                    dateOfBirth: '1997-10-31'
-                    emailVerified: true
-                    signUpDate: '2019-08-24'
+                    admin: false
         '401':
           $ref: '#/components/responses/Error401'
         '403':
@@ -78,8 +76,7 @@ paths:
                     firstName: Rebecca
                     lastName: Baker
                     email: rebecca@gmail.com
-                    dateOfBirth: '1985-10-02'
-                    emailVerified: false
+                    admin: false
                     createDate: '2019-08-24'
         '400':
           $ref: '#/components/responses/Error400'
@@ -94,6 +91,7 @@ paths:
         content:
           application/json:
             schema:
+              description: ''
               type: object
               properties:
                 firstName:
@@ -102,9 +100,8 @@ paths:
                   type: string
                 email:
                   type: string
-                  description: 'If a new email is given, the user''s email verified property will be set to false.'
-                dateOfBirth:
-                  type: string
+                admin:
+                  type: boolean
             examples:
               Update First Name:
                 value:
@@ -112,10 +109,10 @@ paths:
               Update Email:
                 value:
                   email: rebecca@gmail.com
-              Update Last Name & Date of Birth:
+              Update Last Name & admin:
                 value:
                   lastName: Baker
-                  dateOfBirth: '1985-10-02'
+                  admin: true
         description: Patch user properties to update.
       security:
         - bearerAuth: []
@@ -133,13 +130,10 @@ paths:
               examples:
                 New User Bob Fellow:
                   value:
-                    id: dcb6ef4c-396a-49d6-9628-2f67b42bba78
                     firstName: Bob
                     lastName: Fellow
                     email: bob.fellow@gmail.com
-                    dateOfBirth: '1996-08-24'
-                    emailVerified: false
-                    createDate: '2020-11-18'
+                    admin: false
         '400':
           $ref: '#/components/responses/Error400'
         '401':
@@ -576,8 +570,6 @@ paths:
       - $ref: '#/components/parameters/userId'
     get:
       summary: List available products
-      tags:
-        - products
       responses:
         '200':
           description: OK
@@ -612,6 +604,8 @@ paths:
           required: true
       security:
         - bearerAuth: []
+      tags:
+        - products
   '/users/{userId}/products/{productId}/image/{imageId}':
     parameters:
       - $ref: '#/components/parameters/userId'
@@ -642,7 +636,7 @@ components:
       description: ''
       x-examples:
         Alice Smith:
-          id: 142
+          id: 0b278842-8118-426d-81d8-2aaad19cee44
           firstName: Alice
           lastName: Smith
           email: alice.smith@gmail.com
