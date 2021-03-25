@@ -576,8 +576,6 @@ paths:
       - $ref: '#/components/parameters/userId'
     get:
       summary: List available products
-      tags:
-        - users
       responses:
         '200':
           description: OK
@@ -612,6 +610,8 @@ paths:
           required: true
       security:
         - bearerAuth: []
+      tags:
+        - products
   '/users/{userId}/products/{productId}/image/{imageId}':
     parameters:
       - $ref: '#/components/parameters/userId'
