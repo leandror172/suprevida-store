@@ -6,7 +6,7 @@ info:
     name: Leandro Cavalcante da Rocha
     url: www.linkedin.com/in/leandror3
     email: leandrocdarocha@gmail.com
-  description: Simple project representing a store, for Suprevida.
+  description: 'Simple project representing a store, for Suprevida.'
 servers:
   - url: 'http://localhost:3000/api/store/v1'
 tags:
@@ -354,9 +354,10 @@ paths:
         Only admins can edit products.
       tags:
         - products
-  '/users/{userId}/carts':
+  /users/carts:
     parameters:
       - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/productId'
     get:
       summary: List carts
       tags:
@@ -547,59 +548,6 @@ paths:
                     - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
                       quantity: 0
               Remove one item:
-                value:
-                  id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
-                  userId: 2c4a230c-5085-4924-a3e1-25fb4fc5965b
-                  products:
-                    - productId: dcd53ddb-8104-4e48-8cc0-5df1088c6113
-                      quantity: 0
-        description: ''
-      tags:
-        - users
-    delete:
-      summary: Delete cart
-      operationId: delete-users-id-carts
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Cart'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Cart'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      description: 'Delete a shopping cart that belongs to user {userId}'
-      security:
-        - bearerAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Cart'
-            examples:
-              example-1:
                 value:
                   id: 497f6eca-6276-4993-bfeb-53cbbbba6f08
                   userId: 2c4a230c-5085-4924-a3e1-25fb4fc5965b
@@ -806,8 +754,10 @@ components:
         - stateCode
   securitySchemes:
     bearerAuth:
-      type: oauth2
-      flows: {}
+      type: http
+      scheme: bearer
+      description: ''
+      bearerFormat: JWT
   responses:
     Error400:
       description: There is a problem with the request data
@@ -858,5 +808,3 @@ components:
       schema:
         type: string
       description: UUID that identifies an image
-security:
-  - API Key - 1: []
